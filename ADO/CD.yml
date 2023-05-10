@@ -1,4 +1,33 @@
 steps:
-- script: |
-    echo 'hello'
-  displayName: 'test step'
+- task: DownloadPipelineArtifact@2
+  inputs:
+    ArtifactName: '$(ArtifactName)'
+    path: '$(Pipeline.Workspace)'
+    patters: '**/*.zip'
+  displayName: 'Download build Artifacts'
+
+- task: ExtractFiles@1
+  inputs:
+    archiveFilePatterns: '$(Build.ArtifactStagingDirectory)/*.zip'
+    cleanDestinationFolder: true
+    DestinationFolder: './build'
+  displayName: 'Extract Zip Artifacts'
+
+- task: S3Upload@1
+  inputs:
+    awsCredentials: 'AWS'
+    regionName: '$(REGION)'
+    bucketName: '$(bucket_name)'
+    sourceFolder: '$(Pipeline.Workspace/s/build)'
+    globExpressions: '**'
+  displayName: 'S3 Upload'
+
+- task: AWSCLI@1
+  inputs:
+    awsCredentials: 'AWS'
+    regionName: '$(REGION)'
+    awsCommand: cloudfront
+    awsSubCommand: 'create-invalidation'
+    awsArguments: '--distribution-id $(DISTRIBUTION_ID) --paths "/*'
+    paths: '/*'
+  displayName: 'Create CLoudFront invalidation'

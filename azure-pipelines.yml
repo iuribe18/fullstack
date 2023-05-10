@@ -8,6 +8,14 @@ trigger:
 pool:
   name: Default
 
+variables:
+  - name: REGION
+    value: 'us-west-1'
+  - name: DISTRIBUTION_ID
+    value: 'E9LOQQH9RY8JT'
+  - name: bucketname
+    value: 'fullstack-webapp-production'  
+
 stages:
   - stage: Develop
     displayName: 'CI/CD to development environment'
