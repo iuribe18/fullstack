@@ -23,14 +23,14 @@ stages:
       - job: DevelopCI
         displayName: 'DevelopCI'
         condition: |
-          eq(variables['build.sourceBranch'], 'refs/heads/develop')
+          eq(variables['build.sourceBranch'], 'refs/heads/devel')
         steps: 
           - template: ADO/CI.yml
       - job: DevelopCD
         displayName: 'DevelopCD'
         dependsOn: DevelopCI
         condition: |
-          and (succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/develop'))
+          and (succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/devel'))
         steps: 
           - template: ADO/CD.yml
 
