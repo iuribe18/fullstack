@@ -1,19 +1,61 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- main
+  branches:
+    include:
+      - main
+      - stage
+      - devel
 
 pool:
-  vmImage: ubuntu-latest
+  name: Default
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+stages:
+  - stage: Develop
+    displayName: 'CI/CD to development environment'
+    jobs: 
+      - job: DevelopCI
+        displayName: 'DevelopCI'
+        condition: |
+          eq(variables['build.sourceBranch'], 'refs/heads/develop')
+        steps: 
+          - template: ADO/CI.yml
+      - job: DevelopCD
+        displayName: 'DevelopCD'
+        dependsOn: DevelopCI
+        condition: |
+          and (succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/develop'))
+        steps: 
+          - template: ADO/CD.yml
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  - stage: Stage
+    displayName: 'CI/CD to stage environment'
+    jobs: 
+      - job: StageCI
+        displayName: 'StageCI'
+        condition: |
+          eq(variables['build.sourceBranch'], 'refs/heads/stage')
+        steps: 
+          - template: ADO/CI.yml
+      - job: StageCD
+        displayName: 'StageCD'
+        dependsOn: StageCI
+        condition: |
+          and (succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/stage'))
+        steps: 
+          - template: ADO/CD.yml
+
+  - stage: Production
+    displayName: 'CI/CD to production environment'
+    jobs: 
+      - job: ProductionCI
+        displayName: 'ProductionCI'
+        condition: |
+          eq(variables['build.sourceBranch'], 'refs/heads/main')
+        steps: 
+          - template: ADO/CI.yml
+      - job: ProductionCD
+        displayName: 'ProductionCD'
+        dependsOn: ProductionCI
+        condition: |
+          and (succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/stage'))
+        steps: 
+          - template: ADO/CD.yml

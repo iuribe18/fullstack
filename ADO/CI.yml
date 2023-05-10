@@ -1,0 +1,33 @@
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSource: 'fromFile'
+    versionFilePath: '.nvmrc'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install
+    npm run lint
+    npm run prettier
+    CI=true npm run test
+  displayName: 'Install dependencies and prepare the envionment'
+
+- script: |
+    npm run build
+  workingDirectory: $(Build.SourcesDirectory)  
+  displayName: 'build the app'
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/build'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/build.zip'
+    replaceExistingArchive: true
+  displayName: 'Archive Files'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: '$(ArtifactName)'
+  displayName: 'Publish Artifacts'
