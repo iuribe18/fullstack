@@ -18,7 +18,7 @@ steps:
     awsCredentials: 'AWS'
     regionName: '$(REGION)'
     bucketName: '$(bucketname)'
-    sourceFolder: '$(Pipeline.Workspace)/s/build)'
+    sourceFolder: '$(Pipeline.Workspace)/s/build'
     globExpressions: '**'
   displayName: 'S3 Upload'
 
