@@ -12,9 +12,9 @@ variables:
   - name: REGION
     value: 'us-west-1'
   - name: DISTRIBUTION_ID
-    value: 'E9LOQQH9RY8JT'
+    value: 'E3MC86NH0Y21HF	'
   - name: bucketname
-    value: 'fullstack-webapp-production'  
+    value: 'fullstack-webapp-develop'  
 
 stages:
   - stage: Develop
