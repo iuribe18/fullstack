@@ -2,7 +2,7 @@ steps:
 - task: DownloadPipelineArtifact@2
   inputs:
     ArtifactName: '$(ArtifactName)'
-    path: '$(Pipeline.Workspace)'
+    path: '$(Build.ArtifactStagingDirectory)'
     patters: '**/*.zip'
   displayName: 'Download build Artifacts'
 
@@ -17,7 +17,7 @@ steps:
   inputs:
     awsCredentials: 'AWS'
     regionName: '$(REGION)'
-    bucketName: '$(bucket_name)'
+    bucketName: '$(bucketname)'
     sourceFolder: '$(Pipeline.Workspace/s/build)'
     globExpressions: '**'
   displayName: 'S3 Upload'
