@@ -64,6 +64,6 @@ stages:
         displayName: 'ProductionCD'
         dependsOn: ProductionCI
         condition: |
-          and (succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/stage'))
+          and (succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/main'))
         steps: 
           - template: ADO/CD.yml
